@@ -1,5 +1,5 @@
 # base image
-FROM python:3.12-slim-bookworm AS base
+FROM --platform=linux/amd64 python:3.12-slim-bookworm AS base
 
 WORKDIR /app/api
 
@@ -18,7 +18,7 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true
 ENV POETRY_VIRTUALENVS_CREATE=true
 ENV POETRY_REQUESTS_TIMEOUT=15
 
-FROM base AS packages
+FROM --platform=linux/amd64 base AS packages
 
 # if you located in China, you can use aliyun mirror to speed up
 # RUN sed -i 's@deb.debian.org@mirrors.aliyun.com@g' /etc/apt/sources.list.d/debian.sources
@@ -31,7 +31,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --sync --no-cache --no-root
 
 # production stage
-FROM base AS production
+FROM --platform=linux/amd64 base AS production
 
 ENV FLASK_APP=app.py
 ENV EDITION=SELF_HOSTED

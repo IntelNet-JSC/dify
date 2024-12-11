@@ -1,5 +1,5 @@
 # base image
-FROM node:20-alpine3.20 AS base
+FROM --platform=linux/amd64 node:20-alpine3.20 AS base
 LABEL maintainer="takatost@gmail.com"
 
 # if you located in China, you can use aliyun mirror to speed up
@@ -9,7 +9,7 @@ RUN apk add --no-cache tzdata
 
 
 # install packages
-FROM base AS packages
+FROM --platform=linux/amd64 base AS packages
 
 WORKDIR /app/web
 
@@ -22,7 +22,7 @@ COPY yarn.lock .
 RUN yarn install --frozen-lockfile
 
 # build resources
-FROM base AS builder
+FROM --platform=linux/amd64 base AS builder
 WORKDIR /app/web
 COPY --from=packages /app/web/ .
 COPY . .
@@ -31,7 +31,7 @@ RUN yarn build
 
 
 # production stage
-FROM base AS production
+FROM --platform=linux/amd64 base AS production
 
 ENV NODE_ENV=production
 ENV EDITION=SELF_HOSTED
